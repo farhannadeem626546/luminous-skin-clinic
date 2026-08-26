@@ -1,0 +1,3 @@
+import PageHero from "@/components/PageHero";
+export const metadata={title:"Results"};
+export default function Results(){return <><PageHero eyebrow="Before & after" title="Real progress should be shown responsibly." text="This page is prepared for consented client results. Cloudinary will store the media while the database will store treatment, sessions and consent information."/><section className="section"><div className="container"><div className="empty-state"><span className="eyebrow">Cloudinary-ready gallery</span><h2>Client result images will appear here.</h2><p>Upload real, consented before-and-after images through the future admin dashboard. The layout is intentionally ready without inventing fake results.</p></div></div></section></>}

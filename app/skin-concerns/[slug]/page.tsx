@@ -1,0 +1,6 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import TreatmentCard from "@/components/TreatmentCard";
+import { concerns, treatments } from "@/data/site";
+export function generateStaticParams(){return concerns.map(c=>({slug:c.slug}));}
+export default async function ConcernDetail({params}:{params:Promise<{slug:string}>}){const {slug}=await params; const c=concerns.find(x=>x.slug===slug);if(!c)notFound();const rec=treatments.filter(t=>c.recommended.includes(t.slug));return <><section className="page-hero"><div className="container narrow"><span className="eyebrow">Skin concern</span><h1>{c.name}</h1><p>{c.text}</p><div className="hero-actions"><Link className="button primary" href="/booking">Book consultation</Link><Link className="button secondary" href="/skin-concerns">All concerns</Link></div></div></section><section className="section"><div className="container"><div className="section-title"><span className="eyebrow">Possible next steps</span><h2>Treatments worth exploring</h2><p>These options are educational recommendations only. Final suitability should be confirmed by the practitioner.</p></div><div className="treatment-grid">{rec.map(t=><TreatmentCard treatment={t} key={t.slug}/>)}</div></div></section></>}

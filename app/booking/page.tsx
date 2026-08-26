@@ -1,0 +1,3 @@
+import BookingWizard from "@/components/BookingWizard";
+export const metadata={title:"Book Appointment"};
+export default async function Booking({searchParams}:{searchParams:Promise<{treatment?:string}>}){const q=await searchParams;return <><section className="booking-hero"><div className="container narrow"><span className="eyebrow">Online booking</span><h1>Choose your treatment and appointment.</h1><p>The customer-facing booking flow is complete. Stage 3 will connect these steps to real availability and appointment records.</p></div></section><section className="section booking-section"><div className="container"><BookingWizard initialSlug={q.treatment}/></div></section></>}
