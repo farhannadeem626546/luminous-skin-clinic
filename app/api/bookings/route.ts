@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { treatments } from "@/data/site";
+import { getTreatments } from "@/lib/cms";
 import { query, withTransaction } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +16,7 @@ function validTime(value: string) {
 }
 
 export async function GET(request: NextRequest) {
+  const treatments = await getTreatments();
   const date = request.nextUrl.searchParams.get("date") ?? "";
   const treatmentSlug = request.nextUrl.searchParams.get("treatment") ?? "";
 
@@ -79,6 +80,7 @@ type BookingBody = {
 };
 
 export async function POST(request: NextRequest) {
+  const treatments = await getTreatments();
   let body: BookingBody;
 
   try {
