@@ -29,8 +29,8 @@ export async function GET(request: NextRequest) {
     try {
       const schedule = await query<typeof day>(
         `SELECT wh.is_open, wh.open_time::text, wh.close_time::text,
-                EXISTS (SELECT 1 FROM blocked_dates bd WHERE bd.blocked_date = $1::date) AS blocked
-         FROM working_hours wh WHERE wh.day_of_week = EXTRACT(DOW FROM $1::date)::int LIMIT 1`,
+                EXISTS (SELECT 1 FROM clinic_blocked_dates bd WHERE bd.blocked_date = $1::date) AS blocked
+         FROM clinic_working_hours wh WHERE wh.day_of_week = EXTRACT(DOW FROM $1::date)::int LIMIT 1`,
         [date],
       );
       if (schedule.rows[0]) day = schedule.rows[0];
@@ -132,8 +132,8 @@ export async function POST(request: NextRequest) {
       const allowed = await query<{ allowed: boolean }>(
         `SELECT COALESCE(wh.is_open, false)
                 AND $2::time >= wh.open_time AND $2::time < wh.close_time
-                AND NOT EXISTS (SELECT 1 FROM blocked_dates bd WHERE bd.blocked_date=$1::date) AS allowed
-         FROM working_hours wh WHERE wh.day_of_week=EXTRACT(DOW FROM $1::date)::int LIMIT 1`,
+                AND NOT EXISTS (SELECT 1 FROM clinic_blocked_dates bd WHERE bd.blocked_date=$1::date) AS allowed
+         FROM clinic_working_hours wh WHERE wh.day_of_week=EXTRACT(DOW FROM $1::date)::int LIMIT 1`,
         [date, time],
       );
       if (allowed.rows[0] && !allowed.rows[0].allowed) return NextResponse.json({ message: "The clinic is closed at this date or time." }, { status: 409 });
