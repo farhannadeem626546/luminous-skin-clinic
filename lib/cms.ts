@@ -2,7 +2,7 @@ import { query } from "@/lib/db";
 import { treatments as defaults, type Treatment } from "@/data/site";
 export const cmsDefaults:Record<string,string>={
   "home.eyebrow":"Personalised skin & wellness · Leeds","home.title":"Your Skin. Your Confidence. Your Glow.","home.intro":"Professional, personalised treatments in a calm one-to-one setting — created around your skin goals, comfort and confidence.","home.offer":"","home.hero_image":"",
-  "about.title":"Meet the person behind your treatment.","about.text":"Luminous is designed around attentive one-to-one care, clear explanations and a comfortable treatment journey.","about.practitioner":"Luminous Skin Clinic Practitioner","about.qualifications":"",
+  "about.image_url":"","about.title":"Meet the person behind your treatment.","about.text":"Luminous is designed around attentive one-to-one care, clear explanations and a comfortable treatment journey.","about.practitioner":"Luminous Skin Clinic Practitioner","about.qualifications":"",
   "contact.location":"Leeds, United Kingdom","contact.email":"","contact.phone":"","contact.whatsapp":"","contact.map_url":"",
   "booking.deposit_policy":"Deposit rules vary by treatment.","booking.cancellation_policy":"Please contact the clinic in advance to cancel or reschedule.","booking.notice_hours":"24",
   "global.instagram":"","global.facebook":"","global.tiktok":"","global.announcement":""
