@@ -48,8 +48,14 @@ export async function GET(request: NextRequest) {
       [date, treatmentSlug],
     );
 
+    const fallbackBooked = await query<{ appointment_time: string }>(
+      `SELECT appointment_time::text FROM booking_requests
+       WHERE appointment_date=$1 AND treatment_slug=$2
+         AND status NOT IN ('cancelled','declined')`,
+      [date, treatmentSlug],
+    ).catch(() => ({ rows: [] as { appointment_time: string }[] }));
     const unavailable = new Set(
-      booked.rows.map((row) => row.appointment_time.slice(0, 5)),
+      [...booked.rows, ...fallbackBooked.rows].map((row) => row.appointment_time.slice(0, 5)),
     );
 
     return NextResponse.json({
@@ -247,6 +253,15 @@ export async function POST(request: NextRequest) {
           payment_status TEXT NOT NULL DEFAULT 'unpaid', notes TEXT,
           created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )`
+      );
+      const duplicateFallback = await query(
+        `SELECT id FROM booking_requests WHERE treatment_slug=$1 AND appointment_date=$2
+         AND appointment_time=$3 AND status NOT IN ('cancelled','declined') LIMIT 1`,
+        [treatment.slug,date,time],
+      );
+      if (duplicateFallback.rowCount) return NextResponse.json(
+        { message: "This time has just been booked. Please select another slot." },
+        { status: 409 },
       );
       const reference = `LSC-${date.replaceAll("-", "")}-${crypto.randomUUID().slice(0, 6).toUpperCase()}`;
       const fallback = await query<{ id: number }>(
