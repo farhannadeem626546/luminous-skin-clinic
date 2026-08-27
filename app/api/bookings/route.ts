@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { treatments } from "@/data/site";
 import { query, withTransaction } from "@/lib/db";
+import { ensureAdminSchema } from "@/lib/admin-schema";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,15 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    await ensureAdminSchema();
+    const schedule = await query<{ is_open: boolean; open_time: string | null; close_time: string | null; blocked: boolean }>(
+      `SELECT wh.is_open, wh.open_time::text, wh.close_time::text,
+              EXISTS (SELECT 1 FROM blocked_dates bd WHERE bd.blocked_date = $1::date) AS blocked
+       FROM working_hours wh WHERE wh.day_of_week = EXTRACT(DOW FROM $1::date)::int LIMIT 1`,
+      [date],
+    );
+    const day = schedule.rows[0];
+    if (!day || !day.is_open || day.blocked) return NextResponse.json({ availableTimes: [] });
     const booked = await query<{ appointment_time: string }>(
       `SELECT a.appointment_time::text
        FROM appointments a
@@ -39,7 +49,11 @@ export async function GET(request: NextRequest) {
     );
 
     return NextResponse.json({
-      availableTimes: TIMES.filter((time) => !unavailable.has(time)),
+      availableTimes: TIMES.filter((time) => {
+        const open = day.open_time?.slice(0, 5) ?? "00:00";
+        const close = day.close_time?.slice(0, 5) ?? "23:59";
+        return time >= open && time < close && !unavailable.has(time);
+      }),
     });
   } catch (error) {
     console.error("Availability lookup failed:", error);
@@ -103,6 +117,15 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    await ensureAdminSchema();
+    const allowed = await query<{ allowed: boolean }>(
+      `SELECT COALESCE(wh.is_open, false)
+              AND $2::time >= wh.open_time AND $2::time < wh.close_time
+              AND NOT EXISTS (SELECT 1 FROM blocked_dates bd WHERE bd.blocked_date=$1::date) AS allowed
+       FROM working_hours wh WHERE wh.day_of_week=EXTRACT(DOW FROM $1::date)::int LIMIT 1`,
+      [date, time],
+    );
+    if (!allowed.rows[0]?.allowed) return NextResponse.json({ message: "The clinic is closed at this date or time." }, { status: 409 });
     const result = await withTransaction(async (client) => {
       await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [
         `${treatment.slug}|${date}|${time}`,
