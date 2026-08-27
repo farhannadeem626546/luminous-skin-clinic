@@ -2,12 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import TreatmentCard from "@/components/TreatmentCard";
-import { treatments } from "@/data/site";
+import { treatments as staticTreatments } from "@/data/site";
+import { getTreatments } from "@/lib/cms";
 import { cloudinaryImage } from "@/lib/cloudinary";
 
-export function generateStaticParams(){ return treatments.map(t=>({slug:t.slug})); }
+export function generateStaticParams(){ return staticTreatments.map(t=>({slug:t.slug})); }
 
 export default async function TreatmentDetail({params}:{params:Promise<{slug:string}>}){
+  const treatments=await getTreatments();
   const {slug}=await params; const t=treatments.find(x=>x.slug===slug); if(!t) notFound();
   const src=cloudinaryImage(t.cloudinaryPublicId,t.fallbackImage,1400);
   const related=treatments.filter(x=>x.category===t.category && x.slug!==t.slug).slice(0,3);
