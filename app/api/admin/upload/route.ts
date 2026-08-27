@@ -34,3 +34,15 @@ export async function GET() {
   const result = await query("SELECT * FROM media_assets ORDER BY created_at DESC");
   return NextResponse.json({ assets: result.rows });
 }
+
+export async function DELETE(request: NextRequest) {
+  if (!(await isAdmin())) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  const cloudName=process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,apiKey=process.env.CLOUDINARY_API_KEY,apiSecret=process.env.CLOUDINARY_API_SECRET;
+  const publicId=request.nextUrl.searchParams.get("publicId");
+  if(!cloudName||!apiKey||!apiSecret||!publicId)return NextResponse.json({message:"Missing Cloudinary configuration or asset ID."},{status:400});
+  const timestamp=Math.floor(Date.now()/1000);const signature=createHash("sha1").update(`public_id=${publicId}&timestamp=${timestamp}${apiSecret}`).digest("hex");
+  const body=new URLSearchParams({public_id:publicId,timestamp:String(timestamp),api_key:apiKey,signature});
+  const response=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
+  const data=await response.json() as{result?:string};if(!response.ok||!data.result)return NextResponse.json({message:"Cloudinary deletion failed."},{status:502});
+  await query("DELETE FROM media_assets WHERE public_id=$1",[publicId]);return NextResponse.json({ok:true,result:data.result});
+}
