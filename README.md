@@ -1,4 +1,4 @@
-# Luminous Skin Clinic — Stage 2 Front-end
+# Luminous Skin Clinic — Production CMS
 
 Production-oriented multi-page Next.js website foundation for Luminous Skin Clinic, Leeds.
 
@@ -77,3 +77,7 @@ Next stage will add:
 - Treatment CRUD
 - Working contact/booking submissions
 - Booking management
+
+
+## Current production features
+Secure admin, live Neon bookings, editable treatments/reviews/availability, website CMS, and authenticated Cloudinary media uploads.
