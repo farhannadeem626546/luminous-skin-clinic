@@ -16,6 +16,12 @@ export async function ensureAdminSchema() {
     );
     ALTER TABLE treatments ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT true;
     ALTER TABLE treatments ADD COLUMN IF NOT EXISTS duration_minutes INTEGER NOT NULL DEFAULT 60;
+    ALTER TABLE treatments ADD COLUMN IF NOT EXISTS deposit NUMERIC NOT NULL DEFAULT 0;
+    ALTER TABLE treatments ADD COLUMN IF NOT EXISTS short_description TEXT;
+    ALTER TABLE treatments ADD COLUMN IF NOT EXISTS benefits TEXT;
+    ALTER TABLE treatments ADD COLUMN IF NOT EXISTS suitable_for TEXT;
+    ALTER TABLE treatments ADD COLUMN IF NOT EXISTS aftercare TEXT;
+    ALTER TABLE treatments ADD COLUMN IF NOT EXISTS image_url TEXT;
     ALTER TABLE reviews ADD COLUMN IF NOT EXISTS client_name TEXT;
     ALTER TABLE reviews ADD COLUMN IF NOT EXISTS treatment_name TEXT;
     ALTER TABLE reviews ADD COLUMN IF NOT EXISTS rating INTEGER NOT NULL DEFAULT 5;
