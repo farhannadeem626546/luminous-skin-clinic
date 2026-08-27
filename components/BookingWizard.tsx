@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { treatments } from "@/data/site";
+import { treatments as defaultTreatments, type Treatment } from "@/data/site";
 
 type Step = 1 | 2 | 3 | 4 | 5;
 type Details = {
@@ -40,7 +40,8 @@ function displayTime(value: string) {
   }).format(new Date(2026, 0, 1, hours, minutes));
 }
 
-export default function BookingWizard({ initialSlug }: { initialSlug?: string }) {
+export default function BookingWizard({ initialSlug, treatmentOptions = defaultTreatments }: { initialSlug?: string; treatmentOptions?: Treatment[] }) {
+  const treatments = treatmentOptions;
   const initial =
     treatments.find((treatment) => treatment.slug === initialSlug)?.slug ??
     treatments[0].slug;
