@@ -11,8 +11,8 @@ export default async function Home() {
   const treatments = await getTreatments();
   const dbReviews = await getReviews();
   const reviews = dbReviews.length ? dbReviews.map(r=>({name:String(r.client_name),treatment:String(r.treatment_name||"Client"),quote:String(r.review_text)})) : fallbackReviews;
-  const hero = cloudinaryImage("luminous-skin-clinic/homepage/hero", "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=90", 1600);
-  const practitioner = cloudinaryImage("luminous-skin-clinic/practitioners/main-practitioner", "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1000&q=85", 900);
+  const hero = cms["home.hero_image"] || cloudinaryImage("luminous-skin-clinic/homepage/hero", "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=90", 1600);
+  const practitioner = cms["about.image_url"] || cloudinaryImage("luminous-skin-clinic/practitioners/main-practitioner", "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1000&q=85", 900);
   return <>
     <section className="home-hero">
       <div className="hero-photo"><Image src={hero} alt="Professional facial treatment at Luminous Skin Clinic" fill priority sizes="100vw" /></div>
