@@ -1,0 +1,1 @@
+import InquiryDashboard from"@/components/InquiryDashboard";import AdminLogin from"@/components/AdminLogin";import{isAdmin}from"@/lib/admin-auth";export const dynamic='force-dynamic';export const metadata={title:'Enquiries',robots:{index:false,follow:false}};export default async function Page(){return(await isAdmin())?<InquiryDashboard/>:<AdminLogin/>}
