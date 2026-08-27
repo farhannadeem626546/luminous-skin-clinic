@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import BookingWizard from "@/components/BookingWizard";
+import { getTreatments } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Book Appointment",
@@ -14,6 +15,7 @@ export default async function Booking({
   searchParams: Promise<{ treatment?: string }>;
 }) {
   const query = await searchParams;
+  const treatments = await getTreatments();
 
   return (
     <>
@@ -29,7 +31,7 @@ export default async function Booking({
       </section>
       <section className="section booking-section">
         <div className="container">
-          <BookingWizard initialSlug={query.treatment} />
+          <BookingWizard initialSlug={query.treatment} treatmentOptions={treatments} />
         </div>
       </section>
     </>
