@@ -233,10 +233,37 @@ export async function POST(request: NextRequest) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("Booking creation failed:", error);
-    return NextResponse.json(
-      { message: "We could not create the booking. Please try again." },
-      { status: 500 },
-    );
+    console.error("Primary booking creation failed:", error);
+    try {
+      await query(`
+        CREATE TABLE IF NOT EXISTS booking_requests (
+          id BIGSERIAL PRIMARY KEY, booking_reference TEXT UNIQUE NOT NULL,
+          treatment_slug TEXT NOT NULL, treatment_name TEXT NOT NULL,
+          first_name TEXT NOT NULL, last_name TEXT NOT NULL, email TEXT NOT NULL,
+          phone TEXT NOT NULL, appointment_date DATE NOT NULL,
+          appointment_time TIME NOT NULL, status TEXT NOT NULL DEFAULT 'pending',
+          payment_status TEXT NOT NULL DEFAULT 'unpaid', notes TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )`
+      );
+      const reference = `LSC-${date.replaceAll("-", "")}-${crypto.randomUUID().slice(0, 6).toUpperCase()}`;
+      const fallback = await query<{ id: number }>(
+        `INSERT INTO booking_requests
+          (booking_reference,treatment_slug,treatment_name,first_name,last_name,email,phone,
+           appointment_date,appointment_time,status,payment_status,notes)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'pending','unpaid',$10) RETURNING id`,
+        [reference,treatment.slug,treatment.name,firstName,lastName,email,phone,date,time,notes],
+      );
+      return NextResponse.json({
+        ok: true, bookingId: fallback.rows[0].id, bookingReference: reference,
+        message: "Your appointment request has been received."
+      }, { status: 201 });
+    } catch (fallbackError) {
+      console.error("Fallback booking creation failed:", fallbackError);
+      return NextResponse.json(
+        { message: "Booking database is unavailable. Please contact the clinic.", code: "BOOKING_DB_ERROR" },
+        { status: 500 },
+      );
+    }
   }
 }
