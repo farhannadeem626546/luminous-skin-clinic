@@ -33,7 +33,7 @@ export default async function Home() {
 
     <section className="section dark"><div className="container"><SectionTitle center eyebrow="Client experience" title="Results feel better when the journey feels personal." text="Read client feedback and independently published customer reviews."/><div className="trustpilot-wrap"><TrustpilotCard summary={trustpilot}/></div><div className="review-grid">{reviews.slice(0,3).map(r=><blockquote key={r.name+r.quote}><div className="stars">★★★★★</div><p>“{r.quote}”</p><footer><strong>{r.name}</strong><span>{r.treatment}</span></footer></blockquote>)}</div><div className="center-actions"><Link href="/reviews" className="button ghost-light">Read client stories</Link><a href={trustpilot.url} target="_blank" rel="noreferrer" className="button light-button">View Trustpilot</a></div></div></section>
 
-    <InstagramFeed urls={(cms["global.instagram_posts"]||"").split(/\r?\n/).filter(Boolean)}/>
+    <InstagramFeed home urls={(cms["global.instagram_posts"]||"").split(/\r?\n/).filter(Boolean)}/>
 
     <section className="section"><div className="container finder-banner"><div><span className="eyebrow">Not sure what to book?</span><h2>Start with your concern, not the treatment menu.</h2><p>Explore skin concerns and see which treatments may be relevant before choosing your appointment.</p></div><Link href="/skin-concerns" className="button primary">Find My Treatment</Link></div></section>
   </>;
