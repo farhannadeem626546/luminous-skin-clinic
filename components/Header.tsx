@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 const links = [
-  ["Treatments", "/treatments"],
+  ["Services", "/services"],
   ["Skin Concerns", "/skin-concerns"],
   ["Results", "/results"],
   ["Pricing", "/pricing"],
@@ -13,14 +13,13 @@ const links = [
   ["FAQ", "/faq"]
 ];
 
-export default function Header() {
+export default function Header({logoUrl="/luminous-logo.png"}:{logoUrl?:string}) {
   const [open, setOpen] = useState(false);
   return (
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="brand" onClick={() => setOpen(false)}>
-          <span className="brand-mark">L</span>
-          <span><strong>Luminous</strong><small>Skin Clinic · Leeds</small></span>
+          <img className="brand-logo" src={logoUrl||"/luminous-logo.png"} alt="Luminous Skin Clinic" />
         </Link>
         <button className="menu-toggle" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span></span><span></span><span></span>

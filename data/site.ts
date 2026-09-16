@@ -11,6 +11,8 @@ export type Treatment = {
   aftercare: string[];
   cloudinaryPublicId: string;
   fallbackImage: string;
+  videoUrl?: string;
+  sortOrder?: number;
 };
 
 export const treatments: Treatment[] = [
