@@ -6,7 +6,7 @@ const serviceCategories = [
   ["facial-skin-treatments", "Facial Skin Treatments", "Professional facial skin treatments and technology-led add-ons.", 3],
 ] as const;
 
-const serviceSeeds = [
+export const serviceSeeds = [
   ["classic-facial", "Classic Facial", "All Clinic Facials", 25, 60],
   ["extraction-deep-cleansing-facial", "Extraction Deep Cleansing Facial", "All Clinic Facials", 30, 60],
   ["signature-spa-facial", "Signature Spa Facial", "All Clinic Facials", 25, 60],
@@ -66,16 +66,11 @@ export async function ensureAdminSchema() {
   }
   for (const [slug,name,category,price,duration] of serviceSeeds) {
     try {
-      await query(`INSERT INTO treatments(name,slug,category,price,duration_minutes,short_description,description,benefits,suitable_for,aftercare,is_active,sort_order)
-        SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,true,$11
+      await query(`INSERT INTO treatments(name,slug,category,price,duration_minutes,description,is_active)
+        SELECT $1,$2,$3,$4,$5,$6,true
         WHERE NOT EXISTS(SELECT 1 FROM treatments WHERE slug=$2)`,[
         name,slug,category,price,duration,
-        `A professional ${name.toLowerCase()} appointment tailored to your comfort and treatment goals.`,
-        `${name} is delivered following a suitability check, with the treatment plan explained clearly before your appointment begins.`,
-        "Personalised professional care\nComfort-focused appointment\nClear treatment guidance",
-        "Clients seeking personalised skin or wellness care",
-        "Follow the practitioner’s personalised advice\nKeep the treated area comfortable\nContact the clinic with any concerns",
-        serviceSeeds.findIndex(item=>item[0]===slug)+1
+        `${name} is delivered following a suitability check, with the treatment plan explained clearly before your appointment begins.`
       ]);
     } catch (error) { console.warn("Service seed skipped:", error); }
   }
