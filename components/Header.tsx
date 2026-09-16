@@ -13,13 +13,13 @@ const links = [
   ["FAQ", "/faq"]
 ];
 
-export default function Header({logoUrl="/luminous-logo.png"}:{logoUrl?:string}) {
+export default function Header({logoUrl="/luminous-logo-transparent.png"}:{logoUrl?:string}) {
   const [open, setOpen] = useState(false);
   return (
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="brand" onClick={() => setOpen(false)}>
-          <img className="brand-logo" src={logoUrl||"/luminous-logo.png"} alt="Luminous Skin Clinic" />
+          <img className="brand-logo" src={logoUrl||"/luminous-logo-transparent.png"} alt="Luminous Skin Clinic" />
         </Link>
         <button className="menu-toggle" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span></span><span></span><span></span>
