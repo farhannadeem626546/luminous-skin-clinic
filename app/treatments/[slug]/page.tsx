@@ -6,6 +6,8 @@ import { treatments as staticTreatments } from "@/data/site";
 import { getTreatments } from "@/lib/cms";
 import { cloudinaryImage } from "@/lib/cloudinary";
 
+export const dynamic = "force-dynamic";
+
 export function generateStaticParams(){ return staticTreatments.map(t=>({slug:t.slug})); }
 
 export default async function TreatmentDetail({params}:{params:Promise<{slug:string}>}){

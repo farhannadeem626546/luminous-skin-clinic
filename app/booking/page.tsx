@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description:
     "Choose a Luminous Skin Clinic treatment and request an available appointment online.",
 };
+export const dynamic = "force-dynamic";
 
 export default async function Booking({
   searchParams,

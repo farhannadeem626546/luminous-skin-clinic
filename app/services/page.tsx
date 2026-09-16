@@ -4,6 +4,7 @@ import PageHero from "@/components/PageHero";
 import { getServiceCategories, getTreatments } from "@/lib/cms";
 
 export const metadata={title:"Services",description:"Explore clinic facials, massage therapy and facial skin treatments at Luminous Skin Clinic."};
+export const dynamic="force-dynamic";
 
 const fallbackImages:Record<string,string>={
   "clinic-facials":"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1400&q=85",

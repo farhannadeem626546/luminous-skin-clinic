@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServiceCategories, getTreatments } from "@/lib/cms";
 
+export const dynamic="force-dynamic";
+
 const fallbackImages:Record<string,string>={
   "clinic-facials":"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=85",
   "massage-therapy":"https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1600&q=85",

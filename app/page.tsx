@@ -6,6 +6,8 @@ import { concerns, reviews as fallbackReviews } from "@/data/site";
 import { getCms, getReviews, getTreatments } from "@/lib/cms";
 import { cloudinaryImage } from "@/lib/cloudinary";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const cms = await getCms();
   const treatments = await getTreatments();

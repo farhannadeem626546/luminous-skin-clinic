@@ -3,6 +3,7 @@ import TreatmentCard from "@/components/TreatmentCard";
 import { getTreatments } from "@/lib/cms";
 
 export const metadata = { title: "Treatments" };
+export const dynamic = "force-dynamic";
 
 export default async function TreatmentsPage(){
   const treatments = await getTreatments();
